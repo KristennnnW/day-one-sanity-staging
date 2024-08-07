@@ -3,6 +3,8 @@ import { createClient, type QueryParams } from "next-sanity";
 
 const dataset = process.env.SANITY_ENV || 'production';
 
+console.log(`Using dataset: ${dataset}`);
+
 export const client = createClient({
   projectId: "9r4zkoar",
   dataset,

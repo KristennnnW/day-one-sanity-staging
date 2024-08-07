@@ -24,6 +24,20 @@ jobs:
       - name: Install Sanity CLI
         run: npm install -g @sanity/cli
 
+      - name: Sync dataset from production to staging
+        env:
+          SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+          SANITY_PROJECT: ${{ secrets.SANITY_PROJECT }}
+        run: |
+          curl --request PUT \
+          --url https://api.sanity.io/v2021-06-07/projects/$SANITY_PROJECT/datasets/production/copy \
+          --header 'Authorization: Bearer '$SANITY_TOKEN \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "targetDataset": "staging",
+            "skipHistory": true
+          }'
+
       - name: Build project
         env:
           SANITY_PROJECT: ${{ secrets.SANITY_PROJECT }}
