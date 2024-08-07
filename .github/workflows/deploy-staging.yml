@@ -33,4 +33,5 @@ jobs:
           SANITY_PROJECT: ${{ secrets.SANITY_PROJECT }}
           SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
           SANITY_ENV: staging
-        run: npm run deploy
+          SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+        run: sanity deploy --auth-token $SANITY_AUTH_TOKEN
