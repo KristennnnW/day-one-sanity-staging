@@ -1,0 +1,30 @@
+name: Sync Staging Dataset
+
+on:
+  push:
+    branches:
+      - 'staging'
+
+jobs:
+  sync-dataset:
+    runs-on: ubuntu-latest
+    env:
+      SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+      SANITY_PROJECT: ${{ secrets.SANITY_PROJECT }}
+
+    steps:
+      - name: Double-check branch name
+        run: |
+          if [ ${GITHUB_REF##*/} = "production" ]; then exit 1; fi
+          if [ ${GITHUB_REF##*/} = "main" ]; then exit 1; fi
+
+      - name: Clone dataset from production to staging
+        run: |
+          curl --request PUT \
+          --url https://api.sanity.io/v2021-06-07/projects/$SANITY_PROJECT/datasets/production/copy \
+          --header 'Authorization: Bearer '$SANITY_TOKEN \
+          --header 'Content-Type: application/json' \
+          --data '{
+            "targetDataset": "staging",
+            "skipHistory": true
+          }'
