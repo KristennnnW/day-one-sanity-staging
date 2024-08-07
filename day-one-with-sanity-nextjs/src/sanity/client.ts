@@ -7,7 +7,7 @@ export const client = createClient({
   projectId: "9r4zkoar",
   dataset,
   apiVersion: "2024-01-01",
-  useCdn: false,
+  useCdn: process.env.NODE_ENV === 'production',
 });
 
 export async function sanityFetch<QueryResponse>({
@@ -19,6 +19,7 @@ export async function sanityFetch<QueryResponse>({
   params?: QueryParams;
   tags?: string[];
 }) {
+  console.log(`Fetching data from dataset: ${dataset}`);
   return client.fetch<QueryResponse>(query, params, {
     next: {
       revalidate: process.env.NODE_ENV === 'development' ? 30 : 3600,
