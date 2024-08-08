@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -38,3 +38,9 @@ jobs:
           SANITY_ENV: staging
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
         run: sanity deploy --auth-token $SANITY_AUTH_TOKEN
+
+      - name: Sync production to staging
+        env:
+          SANITY_PROJECT: ${{ secrets.SANITY_PROJECT }}
+          SANITY_TOKEN: ${{ secrets.SANITY_TOKEN }}
+        run: node sync-to-staging.js
