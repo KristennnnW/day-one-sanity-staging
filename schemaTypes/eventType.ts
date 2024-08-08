@@ -5,9 +5,15 @@ export const eventType = defineType({
   title: 'Event',
   type: 'document',
   fields: [
-    defineField({
+    {
       name: 'name',
+      title: 'Name',
       type: 'string',
-    }),
+    },
+    {
+      name: 'isPublished',
+      title: 'Is Published',
+      type: 'boolean',
+    },
   ],
 })
