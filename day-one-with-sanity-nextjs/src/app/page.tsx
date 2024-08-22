@@ -4,7 +4,7 @@ import { sanityFetch } from "@/sanity/client";
 
 const EVENTS_QUERY = `*[
   _type == "event"
-]{_id, name}|order(_createdAt desc)`;
+]{_id, name, slug}|order(_createdAt desc)`; // Include slug in the query
 
 export default async function IndexPage() {
   const events = await sanityFetch<SanityDocument[]>({ query: EVENTS_QUERY });
@@ -22,7 +22,7 @@ export default async function IndexPage() {
           >
             <Link
               className="hover:underline"
-              href="#"
+              href={`/events/${event.slug.current}`} // Use the slug to create a link to the detail page
             >
               <h2 className="text-xl font-semibold">{event?.name}</h2>
             </Link>
