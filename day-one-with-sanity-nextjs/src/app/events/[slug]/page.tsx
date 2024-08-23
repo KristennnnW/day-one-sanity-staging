@@ -1,10 +1,20 @@
+'use client';
+
 import { PortableText, type SanityDocument } from "next-sanity";
 import imageUrlBuilder from "@sanity/image-url";
-
 import { SanityImageSource } from "@sanity/image-url/lib/types/types";
-import { client, sanityFetch } from "@/sanity/client";
+import { loadQuery } from "@/sanity.loader";
+import { useQuery } from "@/sanity.loader";
 import Link from "next/link";
 import Image from "next/image";
+// import { Params } from '@/types/params'; 
+import { useLiveMode } from "@/sanity.loader";
+import { Event } from "@/types/event";
+import { client } from "@/sanity/client";
+
+export interface Params {
+    slug: string;
+  }
 
 const EVENT_QUERY = `*[
     _type == "event" &&
@@ -15,21 +25,34 @@ const EVENT_QUERY = `*[
   venue->
 }`;
 
-const { projectId, dataset } = client.config();
-const urlFor = (source: SanityImageSource) =>
-  projectId && dataset
-    ? imageUrlBuilder({ projectId, dataset }).image(source)
-    : null;
+// const { projectId, dataset } = client.config();
+// const urlFor = (source: SanityImageSource) =>
+//   projectId && dataset
+//     ? imageUrlBuilder({ projectId, dataset }).image(source)
+//     : null;
 
-export default async function EventPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
-  const event = await sanityFetch<SanityDocument>({
-    query: EVENT_QUERY,
-    params,
-  });
+//     export const loader = async ({ params }: { params: Params }) => {
+//         return {
+//           params,
+//           initial: await loadQuery<Event>(EVENT_QUERY, params),
+//         };
+//       };
+
+export const loader = async ({ params }: { params: Params }) => {
+    return {
+      params,
+      initial: await loadQuery<Event>(EVENT_QUERY, params),
+    };
+  };
+
+export default function EventPage({ params, initial }: { params: Params; initial: any }) {
+  const { data, encodeDataAttribute } = useQuery<Event>(EVENT_QUERY, params, { initial });
+  useLiveMode({ client, studioUrl: 'https://my.sanity.studio' });
+
+  if (!event) {
+    return <div>Event not found</div>;
+  }
+
   const {
     name,
     date,
@@ -40,10 +63,12 @@ export default async function EventPage({
     doorsOpen,
     venue,
     tickets,
-  } = event;
-  const eventImageUrl = image
-    ? urlFor(image)?.width(550).height(310).url()
+  } = event as unknown as Event;
+
+ const eventImageUrl = image
+    ? image.asset.url
     : null;
+
   const eventDate = new Date(date).toDateString();
   const eventTime = new Date(date).toLocaleTimeString();
   const doorsOpenTime = new Date(
@@ -62,6 +87,7 @@ export default async function EventPage({
           className="mx-auto aspect-video overflow-hidden rounded-xl object-cover object-center sm:w-full"
           height="310"
           width="550"
+          data-sanity={encodeDataAttribute('image')} // Add visual editing overlay
         />
         <div className="flex flex-col justify-center space-y-4">
           <div className="space-y-4">

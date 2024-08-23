@@ -15,17 +15,19 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/client": "^6.21.1",
+    "@sanity/client": "^6.21.3",
     "@sanity/image-url": "^1.0.2",
-    "@sanity/vision": "^3.52.4",
+    "@sanity/react-loader": "^1.10.6",
+    "@sanity/vision": "^3.55.0",
     "dotenv": "^16.4.5",
     "next-sanity": "^9.4.3",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "sanity": "^3.52.4",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
+    "@sanity/cli": "^3.55.0",
     "@sanity/eslint-config-studio": "^4.0.0",
     "@types/react": "^18.0.25",
     "autoprefixer": "^10.4.20",
